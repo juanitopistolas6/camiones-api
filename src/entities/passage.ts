@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { User } from './user'
@@ -19,7 +19,7 @@ export class Passage {
   @Column({ nullable: false })
   route: string
 
-  @OneToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
   user: User
 
