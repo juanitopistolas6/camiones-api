@@ -19,7 +19,7 @@ export class Passage {
   @Column({ nullable: false })
   route: string
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User
 
