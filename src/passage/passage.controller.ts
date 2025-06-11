@@ -13,8 +13,8 @@ export class PassageController {
     private SomeService: SomeService,
   ) {}
 
-  @Authorization(true)
   @Get()
+  @Authorization(true)
   async getAllPasages() {
     try {
       const data = await this.passageService.getAllPassages()
@@ -31,8 +31,8 @@ export class PassageController {
     }
   }
 
-  @Authorization(true)
   @Get(':id')
+  @Authorization(true)
   async getPassageById(@Param('id') id: string) {
     try {
       const data = await this.passageService.getPassageById(id)
@@ -49,8 +49,8 @@ export class PassageController {
     }
   }
 
-  @Authorization(false)
   @Post()
+  @Authorization(false)
   async createPassage(@Body() passageData: CreatePassageDto) {
     try {
       const data = await this.passageService.createPassage(passageData)
