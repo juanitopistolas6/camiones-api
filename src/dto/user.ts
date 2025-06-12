@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class UserDto {
   @IsNotEmpty()
@@ -9,7 +9,7 @@ export class UserDto {
   @IsString()
   password: string
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  saldo: number
+  saldo: number = 0
 }

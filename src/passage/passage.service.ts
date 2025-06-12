@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AuthService } from 'src/auth/auth.service'
-import { CreatePassageDto } from 'src/dto'
+import { CreatePassageDto, DepositDto } from 'src/dto'
 import { Passage, User } from 'src/entities'
 import { Repository } from 'typeorm'
 
@@ -47,6 +47,21 @@ export class PassageService {
       return this.PassageRepository.save(newPassage)
     } catch {
       throw new NotFoundException('ERROR_CREATING_PASSAGE')
+    }
+  }
+
+  async deposit(depositData: DepositDto, id: string) {
+    try {
+      const user = await this.authService.getUser(id)
+
+      const updatedUser = await this.UserRepository.update(
+        { id },
+        { saldo: user.saldo + depositData.deposit },
+      )
+
+      return updatedUser
+    } catch {
+      throw new NotFoundException('ERROR_DEPOSITING_FUNDS')
     }
   }
 }

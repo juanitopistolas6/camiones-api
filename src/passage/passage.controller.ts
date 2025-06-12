@@ -2,8 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { PassageService } from './passage.service'
 import { SomeService } from 'src/utils/some-services'
 import { AuthGuard } from 'src/guards/auth.guard'
-import { CreatePassageDto } from 'src/dto'
-import { Authorization } from 'src/decorators'
+import { CreatePassageDto, DepositDto } from 'src/dto'
+import { Authorization, GetUser } from 'src/decorators'
+import { IUser } from 'src/interfaces'
 
 @Controller('passage')
 @UseGuards(AuthGuard)
@@ -58,6 +59,24 @@ export class PassageController {
       return this.SomeService.FormateData({
         data,
         message: 'PASSAGE_CREATED',
+      })
+    } catch (e) {
+      return this.SomeService.FormateData({
+        error: true,
+        message: e.message,
+      })
+    }
+  }
+
+  @Post('deposit')
+  @Authorization(true)
+  async deposit(@Body() deposit: DepositDto, @GetUser() user: IUser) {
+    try {
+      const data = await this.passageService.deposit(deposit, user.id)
+
+      return this.SomeService.FormateData({
+        data,
+        message: 'DEPOSIT_SUCCESS',
       })
     } catch (e) {
       return this.SomeService.FormateData({
