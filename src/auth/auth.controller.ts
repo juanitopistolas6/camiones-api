@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { Authorization } from 'src/decorators/authorization'
 import { AuthService } from './auth.service'
 import { SomeService } from 'src/utils/some-services'
@@ -16,6 +16,21 @@ export class AuthController {
     private authService: AuthService,
     private someService: SomeService,
   ) {}
+
+  @Get()
+  @Authorization(true)
+  async getUser(@GetUser() user: IUser): Promise<IResponse<User>> {
+    try {
+      const data = await this.authService.User(user.user)
+
+      return this.someService.FormateData<User>({
+        data,
+        message: 'USER_FOUND',
+      })
+    } catch (e) {
+      return this.someService.FormateData({ error: true, message: e.message })
+    }
+  }
 
   @Post()
   @Authorization(false)
@@ -68,10 +83,19 @@ export class AuthController {
 
   @Post('token')
   @Authorization(true)
-  async verifyToken(@GetUser() user: IUser): Promise<IResponse<IUser>> {
-    return this.someService.FormateData<IUser>({
-      data: user,
-      message: 'TOKEN_VERIFIED',
-    })
+  async verifyToken(@GetUser() user: IUser): Promise<IResponse<User>> {
+    try {
+      const data = await this.authService.User(user.user)
+
+      return this.someService.FormateData<User>({
+        data,
+        message: 'TOKEN_VERIFIED',
+      })
+    } catch {
+      return this.someService.FormateData({
+        error: true,
+        message: 'UNATHORIZED',
+      })
+    }
   }
 }
